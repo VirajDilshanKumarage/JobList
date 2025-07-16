@@ -16,6 +16,10 @@ class JobListPage extends StatelessWidget {
         actions: [
 
           IconButton(
+            icon: const Icon(Icons.favorite),
+            onPressed: () => Navigator.pushNamed(context, '/favorites'),
+          ),
+          IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () => context.read<JobBloc>().add(FetchJobs()),
           ),
