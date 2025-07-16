@@ -1,4 +1,3 @@
-
 import 'package:job_list/domain/entities/job.dart';
 
 abstract class JobRepository {

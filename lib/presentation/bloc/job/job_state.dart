@@ -1,6 +1,5 @@
 part of 'job_bloc.dart';
 
-
 abstract class JobState extends Equatable {
   const JobState();
 
@@ -13,8 +12,8 @@ class JobInitial extends JobState {}
 class JobLoading extends JobState {}
 
 class JobLoaded extends JobState {
-  final List<Job> jobs;       
-  final List<Job> allJobs;    
+  final List<Job> jobs;
+  final List<Job> allJobs;
 
   const JobLoaded({required this.jobs, required this.allJobs});
 

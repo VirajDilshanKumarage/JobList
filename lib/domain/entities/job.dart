@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-class Job extends Equatable{
+class Job extends Equatable {
   final String id;
   final String title;
   final String company;
@@ -9,8 +9,6 @@ class Job extends Equatable{
   final String description;
   final String salary;
   final bool isFavorite;
-
-
 
   const Job({
     required this.id,
@@ -25,13 +23,12 @@ class Job extends Equatable{
 
   @override
   List<Object?> get props => [
-        id,
-        title,
-        company,
-        location,
-        type,
-        description,
-        salary,
-      ];
-
+    id,
+    title,
+    company,
+    location,
+    type,
+    description,
+    salary,
+  ];
 }

@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
             title: 'Job Listing App',
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
-            themeMode: themeState.themeMode, 
+            themeMode: themeState.themeMode,
             home: const JobListPage(),
             debugShowCheckedModeBanner: false,
             routes: {'/favorites': (context) => const FavoritesPage()},

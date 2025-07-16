@@ -1,4 +1,3 @@
-
 import 'package:equatable/equatable.dart';
 import 'package:hive/hive.dart';
 import 'package:job_list/domain/entities/job.dart';
@@ -48,31 +47,27 @@ class JobModel extends Equatable {
     this.isFavorite = false,
   });
 
-
   JobModel copyWith({
-  String? id,
-  String? title,
-  String? company,
-  String? location,
-  String? type,
-  String? description,
-  String? salary,
-  bool? isFavorite,
-}) {
-  return JobModel(
-    id: id ?? this.id,
-    title: title ?? this.title,
-    company: company ?? this.company,
-    location: location ?? this.location,
-    type: type ?? this.type,
-    description: description ?? this.description,
-    salary: salary ?? this.salary,
-    isFavorite: isFavorite ?? this.isFavorite,
-  );
-}
-
-
-  
+    String? id,
+    String? title,
+    String? company,
+    String? location,
+    String? type,
+    String? description,
+    String? salary,
+    bool? isFavorite,
+  }) {
+    return JobModel(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      company: company ?? this.company,
+      location: location ?? this.location,
+      type: type ?? this.type,
+      description: description ?? this.description,
+      salary: salary ?? this.salary,
+      isFavorite: isFavorite ?? this.isFavorite,
+    );
+  }
 
   factory JobModel.fromJson(Map<String, dynamic> json) {
     return JobModel(
@@ -87,8 +82,7 @@ class JobModel extends Equatable {
     );
   }
 
-
-    factory JobModel.fromEntity(Job job) {
+  factory JobModel.fromEntity(Job job) {
     return JobModel(
       id: job.id,
       title: job.title,
@@ -102,25 +96,25 @@ class JobModel extends Equatable {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'title': title,
-        'company': company,
-        'location': location,
-        'type': type,
-        'description': description,
-        'salary': salary,
-        'isFavorite': isFavorite,
-      };
+    'id': id,
+    'title': title,
+    'company': company,
+    'location': location,
+    'type': type,
+    'description': description,
+    'salary': salary,
+    'isFavorite': isFavorite,
+  };
 
   @override
   List<Object?> get props => [
-        id,
-        title,
-        company,
-        location,
-        type,
-        description,
-        salary,
-        isFavorite,
-      ];
+    id,
+    title,
+    company,
+    location,
+    type,
+    description,
+    salary,
+    isFavorite,
+  ];
 }
