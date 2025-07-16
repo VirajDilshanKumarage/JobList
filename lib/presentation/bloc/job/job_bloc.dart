@@ -47,7 +47,7 @@ class JobBloc extends Bloc<JobEvent, JobState> {
 
     emit(JobLoaded(
       jobs: filteredJobs,
-      allJobs: currentState.allJobs, // Maintain reference to all jobs
+      allJobs: currentState.allJobs, 
     ));
   }
 }
