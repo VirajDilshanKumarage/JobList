@@ -31,66 +31,80 @@ class _FavoritesPageState extends State<FavoritesPage> {
           ),
         ],
       ),
-      body: BlocConsumer<FavoriteBloc, FavoriteState>(
-        listener: (context, state) {
-          if (state is FavoriteError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
-          }
-        },
-        builder: (context, state) {
-          if (state is FavoriteLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return BlocConsumer<FavoriteBloc, FavoriteState>(
+            listener: (context, state) {
+              if (state is FavoriteError) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+              }
+            },
+            builder: (context, state) {
+              if (state is FavoriteLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-          if (state is FavoriteError) {
-            return Center(child: Text(state.message));
-          }
+              if (state is FavoriteError) {
+                return Center(child: Text(state.message));
+              }
 
-          if (state is FavoriteLoaded) {
-            if (state.favorites.isEmpty) {
-              return _buildEmptyState();
-            }
-            return _buildFavoritesList(state.favorites);
-          }
+              if (state is FavoriteLoaded) {
+                if (state.favorites.isEmpty) {
+                  return _buildEmptyState(constraints);
+                }
+                return _buildFavoritesList(state.favorites, constraints);
+              }
 
-          return const Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
+            },
+          );
         },
       ),
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(BoxConstraints constraints) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.favorite_border, size: 64, color: Colors.grey),
-          const SizedBox(height: 16),
-          Text(
-            'No favorite jobs yet',
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium?.copyWith(color: Colors.grey),
+      child: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: constraints.maxHeight,
           ),
-          const SizedBox(height: 8),
-          Text(
-            'Tap the heart icon on jobs to add them here',
-            style: Theme.of(context).textTheme.bodyMedium,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.favorite_border, size: 64, color: Colors.grey),
+              const SizedBox(height: 16),
+              Text(
+                'No favorite jobs yet',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.grey),
+              ),
+              const SizedBox(height: 8),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: constraints.maxWidth * 0.1),
+                child: Text(
+                  'Tap the heart icon on jobs to add them here',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _buildFavoritesList(List<JobModel> favorites) {
+  Widget _buildFavoritesList(List<JobModel> favorites, BoxConstraints constraints) {
     return RefreshIndicator(
       onRefresh: () async {
         context.read<FavoriteBloc>().add(LoadFavorites());
       },
       child: ListView.builder(
-        padding: const EdgeInsets.all(8),
+        padding: EdgeInsets.symmetric(
+          horizontal: constraints.maxWidth > 600 ? constraints.maxWidth * 0.1 : 8,
+          vertical: 8,
+        ),
         itemCount: favorites.length,
         itemBuilder: (context, index) {
           final job = favorites[index];
@@ -110,34 +124,35 @@ class _FavoritesPageState extends State<FavoritesPage> {
               context.read<FavoriteBloc>().add(RemoveFavorite(job: job));
               _showUndoSnackbar(context, job);
             },
-            child: JobCard(job: job),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: constraints.maxWidth > 600 ? 600 : constraints.maxWidth,
+              ),
+              child: JobCard(job: job),
+            ),
           );
         },
       ),
     );
   }
 
-  Future<bool> _showDeleteConfirmation(
-    BuildContext context,
-    JobModel job,
-  ) async {
+  Future<bool> _showDeleteConfirmation(BuildContext context, JobModel job) async {
     return await showDialog<bool>(
           context: context,
-          builder:
-              (context) => AlertDialog(
-                title: const Text('Remove Favorite'),
-                content: Text('Remove ${job.title} from favorites?'),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context, false),
-                    child: const Text('Cancel'),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.pop(context, true),
-                    child: const Text('Remove'),
-                  ),
-                ],
+          builder: (context) => AlertDialog(
+            title: const Text('Remove Favorite'),
+            content: Text('Remove ${job.title} from favorites?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancel'),
               ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Remove'),
+              ),
+            ],
+          ),
         ) ??
         false;
   }
@@ -159,29 +174,26 @@ class _FavoritesPageState extends State<FavoritesPage> {
   void _showClearAllDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Clear All Favorites'),
-            content: const Text(
-              'Are you sure you want to remove all favorite jobs?',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  context.read<FavoriteBloc>().add(ClearAllFavorites());
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Cleared all favorites')),
-                  );
-                },
-                child: const Text('Clear All'),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: const Text('Clear All Favorites'),
+        content: const Text('Are you sure you want to remove all favorite jobs?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
           ),
+          TextButton(
+            onPressed: () {
+              context.read<FavoriteBloc>().add(ClearAllFavorites());
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Cleared all favorites')),
+              );
+            },
+            child: const Text('Clear All'),
+          ),
+        ],
+      ),
     );
   }
 }

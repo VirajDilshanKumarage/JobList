@@ -40,44 +40,74 @@ class JobListPage extends StatelessWidget {
           ),
         ],
       ),
-      body: BlocConsumer<JobBloc, JobState>(
-        listener: (context, state) {
-          if (state is JobError) {
-            showErrorDialog(context, state.message);
-          }
-        },
-        builder: (context, state) {
-          if (state is JobLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is JobLoaded) {
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    decoration: const InputDecoration(
-                      hintText: 'Search by title or location...',
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return BlocConsumer<JobBloc, JobState>(
+            listener: (context, state) {
+              if (state is JobError) {
+                showErrorDialog(context, state.message);
+              }
+            },
+            builder: (context, state) {
+              if (state is JobLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is JobLoaded) {
+                return Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal:
+                            constraints.maxWidth > 600
+                                ? constraints.maxWidth * 0.1
+                                : 8.0,
+                        vertical: 8.0,
+                      ),
+                      child: TextField(
+                        decoration: const InputDecoration(
+                          hintText: 'Search by title or location...',
+                          prefixIcon: Icon(Icons.search),
+                          border: OutlineInputBorder(),
+                        ),
+                        onChanged: (query) {
+                          context.read<JobBloc>().add(SearchJobs(query));
+                        },
+                      ),
                     ),
-                    onChanged: (query) {
-                      context.read<JobBloc>().add(SearchJobs(query));
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: state.jobs.length,
-                    itemBuilder: (context, index) {
-                      final job = state.jobs[index];
-                      return JobCard(job: JobModel.fromEntity(job));
-                    },
-                  ),
-                ),
-              ],
-            );
-          }
-          return const Center(child: Text('No jobs available'));
+                    Expanded(
+                      child: ListView.builder(
+                        padding: EdgeInsets.symmetric(
+                          horizontal:
+                              constraints.maxWidth > 600
+                                  ? constraints.maxWidth * 0.1
+                                  : 0,
+                        ),
+                        itemCount: state.jobs.length,
+                        itemBuilder: (context, index) {
+                          final job = state.jobs[index];
+                          return Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: constraints.maxWidth > 600 ? 0 : 8.0,
+                              vertical: 4.0,
+                            ),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth:
+                                    constraints.maxWidth > 600
+                                        ? 600
+                                        : double.infinity,
+                              ),
+                              child: JobCard(job: JobModel.fromEntity(job)),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              }
+              return const Center(child: Text('No jobs available'));
+            },
+          );
         },
       ),
     );
