@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:job_list/data/models/job_model.dart';
+import 'package:job_list/presentation/screens/job_detail_screen.dart';
 
 class JobCard extends StatelessWidget {
   final JobModel job;
@@ -28,6 +29,12 @@ class JobCard extends StatelessWidget {
             Text('\$${job.salary}'),
           ],
         ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => JobDetailPage(job: job)),
+          );
+        },
       ),
     );
   }
