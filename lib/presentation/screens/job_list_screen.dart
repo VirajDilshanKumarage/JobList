@@ -1,8 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:job_list/data/models/job_model.dart';
 import 'package:job_list/presentation/bloc/job/job_bloc.dart';
+import 'package:job_list/presentation/bloc/theme/theme_bloc.dart';
 import 'package:job_list/presentation/widgets/job_card.dart';
 
 class JobListPage extends StatelessWidget {
@@ -14,7 +14,6 @@ class JobListPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Job Listings'),
         actions: [
-
           IconButton(
             icon: const Icon(Icons.favorite),
             onPressed: () => Navigator.pushNamed(context, '/favorites'),
@@ -23,8 +22,23 @@ class JobListPage extends StatelessWidget {
             icon: const Icon(Icons.refresh),
             onPressed: () => context.read<JobBloc>().add(FetchJobs()),
           ),
-           
-        ]
+
+          IconButton(
+            icon: Icon(
+              Theme.of(context).brightness == Brightness.dark
+                  ? Icons.light_mode
+                  : Icons.dark_mode,
+              color: Theme.of(context).appBarTheme.foregroundColor,
+            ),
+            onPressed: () {
+              final newThemeMode =
+                  Theme.of(context).brightness == Brightness.dark
+                      ? ThemeMode.light
+                      : ThemeMode.dark;
+              context.read<ThemeBloc>().add(ThemeChanged(newThemeMode));
+            },
+          ),
+        ],
       ),
       body: BlocBuilder<JobBloc, JobState>(
         builder: (context, state) {
@@ -53,7 +67,7 @@ class JobListPage extends StatelessWidget {
                     itemCount: state.jobs.length,
                     itemBuilder: (context, index) {
                       final job = state.jobs[index];
-                      return JobCard(job: JobModel.fromEntity(job)); 
+                      return JobCard(job: JobModel.fromEntity(job));
                     },
                   ),
                 ),
