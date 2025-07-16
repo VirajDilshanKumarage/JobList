@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:job_list/data/models/job_model.dart';
+import 'package:job_list/presentation/bloc/favorite_jobs/favorite_bloc.dart';
 
 class JobDetailPage extends StatelessWidget {
   final JobModel job;
@@ -8,21 +10,39 @@ class JobDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(job.title)),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeaderSection(),
-            const SizedBox(height: 24),
-            _buildJobDetailsSection(),
-            const SizedBox(height: 24),
-            _buildDescriptionSection(),
-          ],
-        ),
-      ),
+    return BlocBuilder<FavoriteBloc, FavoriteState>(
+      builder: (context, state) {
+        final isFavorite =
+            state is FavoriteLoaded
+                ? state.favorites.any((j) => j.id == job.id)
+                : job.isFavorite;
+
+        return Scaffold(
+          appBar: AppBar(title: Text(job.title)),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildHeaderSection(),
+                const SizedBox(height: 24),
+                _buildJobDetailsSection(),
+                const SizedBox(height: 24),
+                _buildDescriptionSection(),
+              ],
+            ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            child: Icon(
+              isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: isFavorite ? Colors.red : null,
+            ),
+            onPressed: () {
+              context.read<FavoriteBloc>().add(ToggleFavorite(job: job));
+            },
+          ),
+        );
+      },
     );
   }
 
