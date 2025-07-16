@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:job_list/core/errors/error_dialog.dart';
 import 'package:job_list/data/models/job_model.dart';
 import 'package:job_list/presentation/bloc/job/job_bloc.dart';
 import 'package:job_list/presentation/bloc/theme/theme_bloc.dart';
@@ -42,20 +43,7 @@ class JobListPage extends StatelessWidget {
       body: BlocConsumer<JobBloc, JobState>(
         listener: (context, state) {
           if (state is JobError) {
-            showDialog(
-              context: context,
-              builder:
-                  (context) => AlertDialog(
-                    title: const Text('Error'),
-                    content: Text(state.message),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: const Text('OK'),
-                      ),
-                    ],
-                  ),
-            );
+            showErrorDialog(context, state.message);
           }
         },
         builder: (context, state) {
