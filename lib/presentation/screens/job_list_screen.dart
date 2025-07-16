@@ -22,7 +22,6 @@ class JobListPage extends StatelessWidget {
             icon: const Icon(Icons.refresh),
             onPressed: () => context.read<JobBloc>().add(FetchJobs()),
           ),
-
           IconButton(
             icon: Icon(
               Theme.of(context).brightness == Brightness.dark
@@ -40,12 +39,28 @@ class JobListPage extends StatelessWidget {
           ),
         ],
       ),
-      body: BlocBuilder<JobBloc, JobState>(
+      body: BlocConsumer<JobBloc, JobState>(
+        listener: (context, state) {
+          if (state is JobError) {
+            showDialog(
+              context: context,
+              builder:
+                  (context) => AlertDialog(
+                    title: const Text('Error'),
+                    content: Text(state.message),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text('OK'),
+                      ),
+                    ],
+                  ),
+            );
+          }
+        },
         builder: (context, state) {
           if (state is JobLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is JobError) {
-            return Center(child: Text(state.message));
           } else if (state is JobLoaded) {
             return Column(
               children: [
