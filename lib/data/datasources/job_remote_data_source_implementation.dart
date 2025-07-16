@@ -1,5 +1,6 @@
 
 import 'package:dio/dio.dart';
+import 'package:job_list/core/constants/url.dart';
 import 'package:job_list/data/datasources/job_remote_data_source.dart';
 import 'package:job_list/data/models/job_model.dart';
 import 'package:job_list/domain/entities/job.dart';
@@ -13,7 +14,7 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
   Future<List<Job>> getJobs() async {
     try {
       final response = await dio.get(
-        'https://68773831dba809d901ee4a8c.mockapi.io/api/v1/Job',
+        AppConstants.jobEndpoint,
       );
 
       if (response.statusCode == 200) {

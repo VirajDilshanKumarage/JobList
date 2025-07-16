@@ -27,18 +27,18 @@ class JobBloc extends Bloc<JobEvent, JobState> {
   }
 
 
-Future<void> _onSearchJobs(SearchJobs event, Emitter<JobState> emit) async {
-  if (state is JobLoaded) {
-    final currentState = state as JobLoaded;
+  Future<void> _onSearchJobs(SearchJobs event, Emitter<JobState> emit) async {
+    if (state is JobLoaded) {
+      final currentState = state as JobLoaded;
+      
     
-    // If query is empty, return all jobs
-    if (event.query.isEmpty) {
-      emit(JobLoaded(
-        jobs: currentState.allJobs,
-        allJobs: currentState.allJobs,  // Maintain the complete list
-      ));
-      return;
-    }
+      if (event.query.isEmpty) {
+        emit(JobLoaded(
+          jobs: currentState.allJobs,
+          allJobs: currentState.allJobs,  
+        ));
+        return;
+      }
 
     final filteredJobs = currentState.allJobs.where((job) =>
         job.company.toLowerCase().contains(event.query.toLowerCase()) ||
