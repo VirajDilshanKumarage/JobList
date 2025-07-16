@@ -1,5 +1,6 @@
 - Setup instructions
     * clone the repository
+    * check into brach called- dev
     * hit this command on terminal to get dependencies- flutter pub get
     * hit the command- flutter run
 
