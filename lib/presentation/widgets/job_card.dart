@@ -6,8 +6,9 @@ import 'package:job_list/presentation/screens/job_detail_screen.dart';
 
 class JobCard extends StatelessWidget {
   final JobModel job;
+  final Animation<double>? animation;
 
-  const JobCard({super.key, required this.job});
+  const JobCard({super.key, required this.job, this.animation});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class JobCard extends StatelessWidget {
                 ? state.favorites.any((j) => j.id == job.id)
                 : job.isFavorite;
 
-        return Card(
+        Widget card = Card(
           margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
@@ -53,13 +54,23 @@ class JobCard extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => JobDetailPage(job: job),
+                PageRouteBuilder(
+                  transitionDuration: const Duration(milliseconds: 500),
+                  pageBuilder: (context, animation, secondaryAnimation) {
+                    return FadeTransition(
+                      opacity: animation,
+                      child: JobDetailPage(job: job),
+                    );
+                  },
                 ),
               );
             },
           ),
         );
+
+        return animation != null
+            ? FadeTransition(opacity: animation!, child: card)
+            : card;
       },
     );
   }
