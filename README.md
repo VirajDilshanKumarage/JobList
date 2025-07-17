@@ -1,16 +1,18 @@
-# job_list
+- Setup instructions
+    * clone the repository
+    * check into brach called- dev
+    * hit this command on terminal to get dependencies- flutter pub get
+    * hit the command- flutter run
 
-A new Flutter project.
+- Brief explanation of architecture
+    * clean architecture: it consist with clean, layered architecture, it separatly manage UI (Presentation layer), State management (Business logic layer), Models/Repositories (Data layer), Erorrs/Constats (Core layer)
 
-## Getting Started
+- Which state management you used
+    * Flutter Bloc
 
-This project is a starting point for a Flutter application.
+- Time taken
+    * Around 4 hours
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Figma UI/UX design
+    * You can goto the UI/UX design using this link- 
+    https://www.figma.com/design/Mx1XpBXHHPXH1fCMi5s40V/Untitled?node-id=2-254&t=lGD7ldYuOpneDcQA-1     
